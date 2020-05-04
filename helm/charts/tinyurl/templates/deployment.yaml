@@ -1,0 +1,33 @@
+{{- $data := . -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "tinyurl.fullname" . }}
+  labels:
+    app: {{ template "tinyurl.name" . }}
+    chart: {{ template "tinyurl.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  revisionHistoryLimit: 0
+  selector:
+    matchLabels:
+      app: {{ template "tinyurl.name" . }}
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "tinyurl.name" . }}
+        release: {{ .Release.Name }}
+    spec:
+      nodeSelector:
+        nodegroup: app
+      containers:
+        - name: {{ .Chart.Name }}
+          image: {{ .Values.image.app.repository }}:{{ .Values.image.app.tag }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.containerPort }}
+              protocol: TCP
