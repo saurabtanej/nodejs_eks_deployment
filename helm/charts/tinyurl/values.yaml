@@ -16,6 +16,26 @@ service:
   type: ClusterIP
   port: 80
   name: tinyurl-local
+  mongo:
+    type: ClusterIP
+    port: 27017
+
+mongodb-replicaset:
+  enabled: true
+  resources:
+    limits:
+      memory: 512Mi
+    requests:
+      memory: 256Mi
+      cpu: 150m
+  auth:
+    enabled: false
+  replicas: 1
+  replicaSetName: rs0
+  image:
+    tag: 4.2.1
+  nameOverride: mongo
+  fullnameOverride: mongo
 
 ingress:
   enabled: true
